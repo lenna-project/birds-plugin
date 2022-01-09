@@ -1,0 +1,35 @@
+{
+  "name": "@lenna-project/birds",
+  "version": "0.1.0",
+  "description": "Plugin to classify birds on images.",
+  "scripts": {
+    "start": "webpack-cli serve --env prod=false",
+    "serve": "serve dist -p 3002 --cors",
+    "build": "webpack --mode production --env prod=true",
+    "clean": "rm -rf dist"
+  },
+  "config": {
+    "shortname": "birds",
+    "publicPath": "https://lenna.app/birds-plugin/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/core": "^7.16.7",
+    "babel-loader": "^8.1.0",
+    "serve": "^13.0.2",
+    "vue": "^3.2"
+  },
+  "devDependencies": {
+    "@vue/compiler-sfc": "^3.2",
+    "css-loader": "^3.6.0",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.3.1",
+    "url-loader": "^4.1.1",
+    "vue-loader": "^16.2.0",
+    "webpack": "^5.33.2",
+    "webpack-cli": "^4.6.0",
+    "webpack-dev-server": "^4.7.2"
+  }
+}
