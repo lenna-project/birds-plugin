@@ -1,0 +1,5 @@
+.venv/
+100-bird-species/
+100-bird-species.zip
+checkpoints/
+*.onnx
