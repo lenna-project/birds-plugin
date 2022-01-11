@@ -43,7 +43,7 @@
 <script>
 import { defineComponent } from "vue";
 export default defineComponent({
-  name: "MobileNetWidget",
+  name: "BirdsWidget",
   props: {
     defaultConfig: Object,
   },

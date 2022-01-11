@@ -26,7 +26,7 @@ pub struct Birds {
 
 impl Birds {
     pub fn model() -> ModelType {
-        let data = include_bytes!("../assets/birds_inceptionv3.onnx");
+        let data = include_bytes!("../assets/birds_mobilenetv2.onnx");
         let mut cursor = Cursor::new(data);
         let model = tract_onnx::onnx()
             .model_for_read(&mut cursor)
@@ -44,7 +44,7 @@ impl Birds {
     }
 
     pub fn labels() -> Vec<String> {
-        let collect = include_str!("../assets/birds_inceptionv3.txt")
+        let collect = include_str!("../assets/birds_labels.txt")
             .to_string()
             .lines()
             .map(|s| s.to_string())
@@ -59,12 +59,12 @@ impl Birds {
         let image_rgb = image.to_rgb8();
         let resized = image::imageops::resize(
             &image_rgb,
-            224,
-            224,
+            SIZE as u32,
+            SIZE as u32,
             ::image::imageops::FilterType::Triangle,
         );
         let tensor: Tensor =
-            tract_ndarray::Array4::from_shape_fn((1, SIZE, SIZE, 3), |(_, x, y, c)| {
+            tract_ndarray::Array4::from_shape_fn((1, SIZE, SIZE, 3), |(_, y, x, c)| {
                 resized[(x as _, y as _)][c] as f32 / 255.0
             })
             .into();
@@ -74,7 +74,7 @@ impl Birds {
             .to_array_view::<f32>()?
             .iter()
             .cloned()
-            .zip(1..)
+            .zip(0..)
             .max_by(|a, b| a.0.partial_cmp(&b.0).unwrap());
         let index = best.unwrap().1;
         let label = Self::labels()[index].to_string();
@@ -201,7 +201,7 @@ impl Processor for Birds {
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
 #[cfg(target_arch = "wasm32")]
-lenna_core::export_wasm_plugin!(birds);
+lenna_core::export_wasm_plugin!(Birds);
 
 #[cfg(feature = "python")]
 use pyo3::prelude::*;
