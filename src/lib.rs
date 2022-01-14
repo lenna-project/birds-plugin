@@ -12,6 +12,7 @@ extern "C" fn register(registrar: &mut dyn PluginRegistrar) {
     registrar.add_plugin(Box::new(Birds::default()));
 }
 
+#[cfg(feature = "plugin")]
 lenna_core::export_plugin!(register);
 
 type ModelType = SimplePlan<TypedFact, Box<dyn TypedOp>, Graph<TypedFact, Box<dyn TypedOp>>>;
