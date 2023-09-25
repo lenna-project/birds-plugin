@@ -113,8 +113,8 @@ impl ImageProcessor for Birds {
             draw_text_mut(
                 &mut img,
                 Rgba([0u8, 0u8, 0u8, 255u8]),
-                self.config.x,
-                self.config.y,
+                self.config.x.try_into().unwrap(),
+                self.config.y.try_into().unwrap(),
                 scale,
                 &font,
                 &label,
