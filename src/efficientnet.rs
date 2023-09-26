@@ -8,7 +8,7 @@ const SIZE: usize = 260;
 
 impl Birds {
     pub fn model() -> Result<ModelType, Box<dyn std::error::Error>> {
-        let data = include_bytes!("../assets/birds_efficientnetb2.onnx");
+        let data = include_bytes!("../assets/Birds-Classifier-EfficientNetB2.onnx");
         let mut cursor = Cursor::new(data);
         let model = tract_onnx::onnx()
             .model_for_read(&mut cursor)?
@@ -43,7 +43,9 @@ impl Birds {
         );
         let tensor: Tensor =
             tract_ndarray::Array4::from_shape_fn((1, 3, SIZE, SIZE), |(_, c, y, x)| {
-                (resized[(x as _, y as _)][c] as f32 / 255.0)
+                let mean = [0.485, 0.456, 0.406][c];
+                let std = [0.47853944, 0.4732864, 0.47434163][c];
+                (resized[(x as _, y as _)][c] as f32 / 255.0 - mean) / std
             })
             .into();
 

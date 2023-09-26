@@ -100,9 +100,7 @@ model.compile(loss='categorical_crossentropy',
 
 checkpoint_path = "./checkpoints/birds_mobilenet/"
 
-# Check if checkpoint directory exists and contains saved_model.pb
 if os.path.exists(checkpoint_path) and os.path.isfile(os.path.join(checkpoint_path, 'saved_model.pb')):
-    # If SavedModel exists, load the entire model
     model = tf.keras.models.load_model(checkpoint_path)
     print(f"Loaded model from {checkpoint_path}")
 else:

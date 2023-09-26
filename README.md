@@ -99,3 +99,9 @@ Find an example in [example.ipynb](example.ipynb)
 pip install jupyter
 jupyter notebook example.ipynb
 ```
+
+### Thanks
+
+Thanks to [gpiosenka](https://www.kaggle.com/gpiosenka/100-bird-species) for the dataset.
+
+Thanks to [dennisjooo](https://huggingface.co/dennisjooo/Birds-Classifier-EfficientNetB2) for the efficientnet model.

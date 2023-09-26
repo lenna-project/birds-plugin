@@ -36,3 +36,9 @@ python export_onnx_model.py
 cp birds_mobilenetv2.onnx ../assets/
 cp birds_labels.txt ../assets/
 ```
+
+## Download EfficientNetB2
+
+```sh
+python download_efficientnet.py
+```
