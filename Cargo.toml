@@ -11,7 +11,7 @@ repository = "https://github.com/lenna-project/birds-plugin"
 crate-type = ["cdylib", "rlib"]
 
 [features]
-default = ["plugin"]
+default = ["plugin", "mobilenet"]
 python = [
     "lenna_core/python",
     "ndarray",
@@ -21,6 +21,8 @@ python = [
     "pythonize",
 ]
 plugin = []
+mobilenet = []
+efficientnet = []
 
 [dependencies]
 console_error_panic_hook = "0.1"
