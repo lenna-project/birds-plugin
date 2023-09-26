@@ -7,7 +7,7 @@ import tf2onnx
 
 img_height = 224
 img_width = 224
-
+num_labels = 525
 
 def get_birds_mobilenet():
     pre_trained_model = MobileNetV2(
@@ -24,7 +24,7 @@ def get_birds_mobilenet():
 
     x = GlobalAveragePooling2D()(last_layer)
     x = Dense(1024, activation='relu')(x)
-    x = layers.Dense(325, activation='softmax')(x)
+    x = layers.Dense(num_labels, activation='softmax')(x)
 
     model = Model(pre_trained_model.input, x)
     return model

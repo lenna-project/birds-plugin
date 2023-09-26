@@ -5,14 +5,17 @@ import PIL
 import PIL.Image
 import tensorflow as tf
 
-from tensorflow.keras.layers import Layer, Conv2D, MaxPool2D, Dense, Flatten, Dropout, GlobalAveragePooling2D
-from tensorflow.keras.applications import MobileNetV2
-from tensorflow.keras import layers
-from tensorflow.keras import Model
+from keras.layers import Layer, Conv2D, MaxPool2D, Dense, Flatten, Dropout, GlobalAveragePooling2D
+from keras.applications import MobileNetV2
+from keras import layers
+from keras import Model
+
+print("GPUs: ", tf.config.list_physical_devices('GPU'))
 
 img_height = 224
 img_width = 224
 batch_size = 64
+num_labels = 525
 
 data_dir = './100-bird-species/'
 data_dir_train = os.path.join(data_dir, 'train')
@@ -59,6 +62,13 @@ train_dataset = (train_ds
 valid_dataset = valid_ds.map(normalize)
 test_dataset = test_ds.map(normalize)
 
+def write_labels(labels, filename):
+    with open(filename, 'w') as f:
+        for class_name in labels:
+            f.write(f'{class_name}\n')
+
+    print(f'Class names written to {filename}')
+
 
 def get_birds_mobilenet():
     pre_trained_model = MobileNetV2(
@@ -75,27 +85,36 @@ def get_birds_mobilenet():
 
     x = GlobalAveragePooling2D()(last_layer)
     x = Dense(1024, activation='relu')(x)
-    x = layers.Dense(325, activation='softmax')(x)
+    x = layers.Dense(num_labels, activation='softmax')(x)
 
     model = Model(pre_trained_model.input, x)
     return model
 
+write_labels(train_ds.class_names, 'birds_labels.txt')
 
 model = get_birds_mobilenet()
 model.summary()
 
 model.compile(loss='categorical_crossentropy',
               optimizer='adam', metrics=['accuracy'])
+
 checkpoint_path = "./checkpoints/birds_mobilenet/"
 
-model.load_weights(checkpoint_path)
+# Check if checkpoint directory exists and contains saved_model.pb
+if os.path.exists(checkpoint_path) and os.path.isfile(os.path.join(checkpoint_path, 'saved_model.pb')):
+    # If SavedModel exists, load the entire model
+    model = tf.keras.models.load_model(checkpoint_path)
+    print(f"Loaded model from {checkpoint_path}")
+else:
+    print("No checkpoints found, training from scratch.")
+
 
 model_history = model.fit(
     train_dataset,
     validation_data=valid_dataset,
     epochs=200,
     callbacks=[
-        #tf.keras.callbacks.EarlyStopping(patience=5),
+        tf.keras.callbacks.EarlyStopping(monitor='loss', patience=10),
         tf.keras.callbacks.ModelCheckpoint(
             filepath=checkpoint_path, verbose=0, save_freq="epoch")
     ])

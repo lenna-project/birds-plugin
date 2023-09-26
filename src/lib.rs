@@ -16,7 +16,7 @@ extern "C" fn register(registrar: &mut dyn PluginRegistrar) {
 lenna_core::export_plugin!(register);
 
 type ModelType = SimplePlan<TypedFact, Box<dyn TypedOp>, Graph<TypedFact, Box<dyn TypedOp>>>;
-const SIZE: usize = 150;
+const SIZE: usize = 224;
 
 #[derive(Clone)]
 pub struct Birds {
@@ -26,22 +26,18 @@ pub struct Birds {
 }
 
 impl Birds {
-    pub fn model() -> ModelType {
+    pub fn model() -> Result<ModelType, Box<dyn std::error::Error>> {
         let data = include_bytes!("../assets/birds_mobilenetv2.onnx");
         let mut cursor = Cursor::new(data);
         let model = tract_onnx::onnx()
-            .model_for_read(&mut cursor)
-            .unwrap()
+            .model_for_read(&mut cursor)?
             .with_input_fact(
                 0,
                 InferenceFact::dt_shape(f32::datum_type(), tvec!(1, SIZE, SIZE, 3)),
-            )
-            .unwrap()
-            .into_optimized()
-            .unwrap()
-            .into_runnable()
-            .unwrap();
-        model
+            )?
+            .into_optimized()?
+            .into_runnable()?;
+        Ok(model)
     }
 
     pub fn labels() -> Vec<String> {
@@ -70,7 +66,7 @@ impl Birds {
             })
             .into();
 
-        let result = self.model.run(tvec!(tensor)).unwrap();
+        let result = self.model.run(tvec!(tensor.into())).unwrap();
         let best = result[0]
             .to_array_view::<f32>()?
             .iter()
@@ -87,7 +83,7 @@ impl Default for Birds {
     fn default() -> Self {
         Birds {
             config: Config::default(),
-            model: Self::model(),
+            model: Self::model().unwrap(),
             label: None,
         }
     }
