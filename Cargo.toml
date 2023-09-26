@@ -47,6 +47,7 @@ pythonize = { version = "0.16", optional = true }
 wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
 wasm-bindgen-futures = { version = "0.4.37" }
 js-sys = "0.3.64"
+getrandom = { version = "0.2.10", features = ["js"] }
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3.37"
