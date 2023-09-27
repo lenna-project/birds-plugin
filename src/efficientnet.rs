@@ -16,6 +16,7 @@ impl Birds {
                 0,
                 InferenceFact::dt_shape(f32::datum_type(), tvec!(1, 3, SIZE, SIZE)),
             )?
+            .with_output_fact(0, Default::default())?
             .into_optimized()?
             .into_runnable()?;
         Ok(model)
