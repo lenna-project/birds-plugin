@@ -42,3 +42,11 @@ cp birds_labels.txt ../assets/
 ```sh
 python download_efficientnet.py
 ```
+
+# torch train version
+
+```sh
+pip install torch==1.13.1+rocm5.2 torchvision==0.14.1+rocm5.2 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/rocm5.2
+pip install tqdm
+python train_torch.py
+```
