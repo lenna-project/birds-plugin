@@ -83,8 +83,22 @@ print("Optimizer:", optimizer)
 print("Epochs:", num_epochs)
 print("Checkpoint directory:", checkpoint_dir)
 
+# Load the model, optimizer, and other parameters from checkpoint
+start_epoch = 0
+checkpoint_path = os.path.join(checkpoint_dir, 'checkpoint.pth')
+
+if os.path.isfile(checkpoint_path):
+    print(f"Loading checkpoint '{checkpoint_path}'")
+    checkpoint = torch.load(checkpoint_path)
+    start_epoch = checkpoint['epoch'] + 1
+    model.load_state_dict(checkpoint['model_state_dict'])
+    optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+    print(f"Loaded checkpoint '{checkpoint_path}' (epoch {checkpoint['epoch']})")
+else:
+    print("No checkpoint found at '{}'. Starting from scratch".format(checkpoint_path))
+
 # Initialize the progress bar
-epoch_progress = tqdm(range(num_epochs), desc="Epoch Progress", position=0, leave=True)
+epoch_progress = tqdm(range(start_epoch, num_epochs), desc="Epoch Progress", position=0, leave=True)
 
 # Training loop
 for epoch in epoch_progress:
@@ -133,6 +147,15 @@ for epoch in epoch_progress:
     epoch_progress.set_description(f"Epoch {epoch} Completed in {time_elapsed:.2f}s")
 
     checkpoint_path = os.path.join(checkpoint_dir, f'checkpoint_epoch_{epoch}.pth')
+    torch.save({
+        'epoch': epoch,
+        'model_state_dict': model.state_dict(),
+        'optimizer_state_dict': optimizer.state_dict(),
+        'loss': loss,
+        'running_loss': running_loss,
+        'running_corrects': running_corrects
+    }, checkpoint_path)
+    checkpoint_path = os.path.join(checkpoint_dir, f'checkpoint.pth')
     torch.save({
         'epoch': epoch,
         'model_state_dict': model.state_dict(),
