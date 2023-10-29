@@ -8,13 +8,13 @@ const SIZE: usize = 226;
 
 impl Birds {
     pub fn model() -> Result<ModelType, Box<dyn std::error::Error>> {
-        let data = include_bytes!("../assets/birds_mobilenetv2.onnx");
+        let data = include_bytes!("../assets/Birds-Classifier-MobileNetV2.onnx");
         let mut cursor = Cursor::new(data);
         let model = tract_onnx::onnx()
             .model_for_read(&mut cursor)?
             .with_input_fact(
                 0,
-                InferenceFact::dt_shape(f32::datum_type(), tvec!(1, SIZE, SIZE, 3)),
+                InferenceFact::dt_shape(f32::datum_type(), tvec!(1, 3, SIZE, SIZE)),
             )?
             .with_output_fact(0, Default::default())?
             .into_optimized()?
@@ -43,9 +43,9 @@ impl Birds {
             ::image::imageops::FilterType::Triangle,
         );
         let tensor: Tensor =
-            tract_ndarray::Array4::from_shape_fn((1, SIZE, SIZE, 3), |(_, y, x, c)| {
+            tract_ndarray::Array4::from_shape_fn((1, 3, SIZE, SIZE), |(_, c, y, x)| {
                 let mean = [0.485, 0.456, 0.406][c];
-                let std = [0.229, 0.224, 0.225][c];
+                let std = [0.47853944, 0.4732864, 0.47434163][c];
                 (resized[(x as _, y as _)][c] as f32 / 255.0 - mean) / std
             })
             .into();

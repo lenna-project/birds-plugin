@@ -17,6 +17,22 @@ The file target/release/liblenna_birds_plugin.so can be copied to the plugins fo
 
 [lenna-cli](https://github.com/lenna-project/lenna-cli) and used in the pipeline.
 
+### mobilenet
+
+The plugin can be build with mobilenetv2.
+
+```bash
+cargo build --release --features mobilenet
+```
+
+### efficientnet
+
+The plugin can be build with efficientnetb2.
+
+```bash
+cargo build --release --no-default-features --features efficientnet
+```
+
 ## wasm and javascript version
 
 The plugin can be compiled to wasm and used on [lenna.app](https://lenna.app).
